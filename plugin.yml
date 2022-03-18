@@ -9,3 +9,5 @@ permissions:
     default: op
   trashcan.despawn:
     default: op
+  trashcan.get:
+    default: op

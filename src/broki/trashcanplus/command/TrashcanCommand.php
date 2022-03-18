@@ -7,10 +7,14 @@ namespace broki\trashcanplus\command;
 use broki\trashcanplus\Trashcan;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
+use pocketmine\item\ItemFactory;
+use pocketmine\item\ItemIds;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\player\Player;
 use pocketmine\plugin\Plugin;
 use pocketmine\plugin\PluginOwned;
 use pocketmine\utils\TextFormat;
+use Ramsey\Uuid\Uuid;
 
 class TrashcanCommand extends Command implements PluginOwned {
 
@@ -25,6 +29,15 @@ class TrashcanCommand extends Command implements PluginOwned {
 
         if (isset($args[0])) {
             switch (strtolower($args[0])) {
+                case "item":
+                case "get":
+                    if (!$sender->hasPermission("trashcan.get")) {
+                        return true;
+                    }
+
+                    $trashcanItem = ItemFactory::getInstance()->get(ItemIds::CAULDRON)->setNamedTag(CompoundTag::create()->setInt("trashcan_item", 1)->setString("id", Uuid::uuid4()->toString()));
+                    $sender->getInventory()->addItem($trashcanItem->setCustomName(TextFormat::RESET . TextFormat::WHITE . "Trashcan"));
+                    break;
                 case "spawn":
                 case "create":
                     if (!$sender->hasPermission("trashcan.spawn")) {
@@ -32,7 +45,7 @@ class TrashcanCommand extends Command implements PluginOwned {
                     }
 
                     $sender->sendMessage("[Trashcan]" . TextFormat::GREEN . " Trashcan successfully spawned!");
-                Trashcan::getInstance()->spawnTrashcan($sender->getLocation(), $args[1] ?? null);
+                    Trashcan::getInstance()->spawnTrashcan($sender->getLocation(), $args[1] ?? null);
                     break;
                 case "despawn":
                 case "remove":
