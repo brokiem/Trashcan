@@ -31,7 +31,7 @@ class TrashcanEntity extends Human {
                 $attackerUuid = $attacker->getUniqueId()->toString();
 
                 if (in_array($attackerUuid, Trashcan::getInstance()->listWhoWannaDespawnTrashcan, true)) {
-                    $attacker->sendMessage("[Trashcan] " . TextFormat::GREEN . "Despawn trashcan successfully");
+                    $attacker->sendMessage("[Trashcan]" . TextFormat::GREEN . " Despawn trashcan successfully");
                     $this->flagForDespawn();
 
                     unset(Trashcan::getInstance()->listWhoWannaDespawnTrashcan[array_search($attackerUuid, Trashcan::getInstance()->listWhoWannaDespawnTrashcan, true)]);
@@ -46,7 +46,7 @@ class TrashcanEntity extends Human {
         $attackerUuid = $player->getUniqueId()->toString();
 
         if (in_array($attackerUuid, Trashcan::getInstance()->listWhoWannaDespawnTrashcan, true)) {
-            $player->sendMessage("Despawn trashcan successfully");
+            $player->sendMessage("[Trashcan]" . TextFormat::GREEN . " Despawn trashcan successfully");
             $this->flagForDespawn();
 
             unset(Trashcan::getInstance()->listWhoWannaDespawnTrashcan[array_search($attackerUuid, Trashcan::getInstance()->listWhoWannaDespawnTrashcan, true)]);

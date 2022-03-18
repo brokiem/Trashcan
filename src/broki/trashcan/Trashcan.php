@@ -46,20 +46,13 @@ class Trashcan extends PluginBase {
 
     public function checkResources(): void {
         $modelPath = $this->getDataFolder() . "model";
-        $jsonPath = $this->getDataFolder() . "model/trashcan.json";
-        $texturePath = $this->getDataFolder() . "model/trashcan.png";
 
         if (!file_exists($modelPath)) {
             @mkdir($modelPath);
         }
 
-        if (!file_exists($jsonPath)) {
-            $this->saveResource("model/trashcan.json");
-        }
-
-        if (!file_exists($texturePath)) {
-            $this->saveResource("model/trashcan.png");
-        }
+        $this->saveResource("model/trashcan.png");
+        $this->saveResource("model/trashcan.json");
     }
 
     public function processSkin(): Skin {
