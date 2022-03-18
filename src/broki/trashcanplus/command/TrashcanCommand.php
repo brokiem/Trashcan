@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace broki\trashcan3d\command;
+namespace broki\trashcanplus\command;
 
-use broki\trashcan3d\Trashcan;
+use broki\trashcanplus\Trashcan;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
@@ -51,7 +51,7 @@ class TrashcanCommand extends Command implements PluginOwned {
                     break;
             }
         } else {
-            $sender->sendMessage("§7---- ---- [ §3Trashcan§7 ] ---- ----\n§bAuthor: @brokiem\n§3Source Code: github.com/brokiem/Trashcan\nVersion " . $this->getOwningPlugin()->getDescription()->getVersion() . "\n§7---- ---- ---- - ---- ---- ----");
+            $sender->sendMessage("§7---- ---- [ §3TrashcanPlus§7 ] ---- ----\n§bAuthor: @brokiem\n§3Source Code: github.com/brokiem/Trashcan\nVersion " . $this->getOwningPlugin()->getDescription()->getVersion() . "\n§7---- ---- ---- - ---- ---- ----");
         }
 
         return false;

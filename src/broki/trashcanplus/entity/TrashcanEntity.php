@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace broki\trashcan3d\entity;
+namespace broki\trashcanplus\entity;
 
-use broki\trashcan3d\Trashcan;
+use broki\trashcanplus\Trashcan;
 use pocketmine\entity\Human;
 use pocketmine\entity\Location;
 use pocketmine\entity\Skin;
