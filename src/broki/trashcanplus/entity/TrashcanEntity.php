@@ -5,19 +5,26 @@ declare(strict_types=1);
 namespace broki\trashcanplus\entity;
 
 use broki\trashcanplus\Trashcan;
+use muqsit\invmenu\InvMenu;
+use muqsit\invmenu\type\InvMenuTypeIds;
+use pocketmine\block\VanillaBlocks;
 use pocketmine\entity\Human;
 use pocketmine\entity\Location;
 use pocketmine\entity\Skin;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\item\Item;
 use pocketmine\math\Vector3;
+use pocketmine\nbt\NBT;
 use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 
 class TrashcanEntity extends Human {
 
     private bool $isOpened;
+    private InvMenu $invMenu;
 
     public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt = null) {
         parent::__construct($location, $skin, $nbt);
@@ -28,6 +35,10 @@ class TrashcanEntity extends Human {
 
     public function isOpened(): bool {
         return $this->isOpened;
+    }
+
+    public function getInvMenu(): InvMenu {
+        return $this->invMenu;
     }
 
     public function attack(EntityDamageEvent $source): void {
@@ -51,7 +62,7 @@ class TrashcanEntity extends Human {
                     $this->sendSkin();
                     $this->isOpened = str_contains($this->getSkin()->getGeometryName(), "open");
                 } else {
-                    Trashcan::getInstance()->sendTrashcanInv($attacker);
+                    Trashcan::getInstance()->sendTrashcanInv($this->getInvMenu(), $attacker);
                 }
             }
         }
@@ -62,6 +73,15 @@ class TrashcanEntity extends Human {
 
         if (in_array($attackerUuid, Trashcan::getInstance()->listWhoWannaDespawnTrashcan, true)) {
             $player->sendMessage("[Trashcan]" . TextFormat::GREEN . " Despawn trashcan successfully");
+
+            for ($i = 0; $i < 54; $i++) {
+                if (in_array($i, Trashcan::getInstance()->getInventoryBorderSlots(), true)) {
+                    continue;
+                }
+
+                $this->getWorld()->dropItem($this->getPosition(), $this->getInvMenu()->getInventory()->getItem($i));
+            }
+
             $this->flagForDespawn();
 
             unset(Trashcan::getInstance()->listWhoWannaDespawnTrashcan[array_search($attackerUuid, Trashcan::getInstance()->listWhoWannaDespawnTrashcan, true)]);
@@ -74,9 +94,52 @@ class TrashcanEntity extends Human {
             $this->sendSkin();
             $this->isOpened = str_contains($this->getSkin()->getGeometryName(), "open");
         } else {
-            Trashcan::getInstance()->sendTrashcanInv($player);
+            Trashcan::getInstance()->sendTrashcanInv($this->getInvMenu(), $player);
         }
 
         return false;
+    }
+
+    protected function initEntity(CompoundTag $nbt): void {
+        parent::initEntity($nbt);
+
+        $invMenu = InvMenu::create(InvMenuTypeIds::TYPE_DOUBLE_CHEST);
+
+        $items = $nbt->getListTag("trashcan_inventory");
+        if ($items !== null) {
+            /** @var CompoundTag $item */
+            foreach ($items as $item) {
+                $invMenu->getInventory()->setItem($item->getByte("Slot"), Item::nbtDeserialize($item));
+            }
+        }
+
+        foreach (Trashcan::getInstance()->getInventoryBorderSlots() as $borderSlot) {
+            $namedtag = CompoundTag::create()->setInt("trashcan_border_item", 1);
+            $borderItem = VanillaBlocks::IRON_BARS()->asItem()->setNamedTag($namedtag)->setCustomName(" ");
+            $invMenu->getInventory()->setItem($borderSlot, $borderItem);
+        }
+
+        $clearItem = VanillaBlocks::BARRIER()->asItem()->setNamedTag(CompoundTag::create()->setInt("trashcan_clear_item", 1));
+        $invMenu->getInventory()->setItem(49, $clearItem->setCustomName(TextFormat::RESET . TextFormat::RED . "CLEAR TRASH-CAN"));
+
+        $this->invMenu = $invMenu;
+    }
+
+    public function saveNBT(): CompoundTag {
+        $nbt = parent::saveNBT();
+
+        /** @var CompoundTag[] $items */
+        $items = [];
+
+        $slotCount = $this->getInvMenu()->getInventory()->getSize();
+        for ($slot = 0; $slot < $slotCount; ++$slot) {
+            $item = $this->getInvMenu()->getInventory()->getItem($slot);
+            if (!$item->isNull()) {
+                $items[] = $item->nbtSerialize($slot);
+            }
+        }
+
+        $nbt->setTag("trashcan_inventory", new ListTag($items, NBT::TAG_Compound));
+        return $nbt;
     }
 }

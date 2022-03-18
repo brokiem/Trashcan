@@ -6,15 +6,19 @@ namespace broki\trashcanplus;
 
 use broki\trashcanplus\command\TrashcanCommand;
 use broki\trashcanplus\entity\TrashcanEntity;
+use broki\trashcanplus\sound\RandomOrbSound;
 use muqsit\invmenu\InvMenu;
 use muqsit\invmenu\InvMenuHandler;
-use muqsit\invmenu\type\InvMenuTypeIds;
+use muqsit\invmenu\transaction\InvMenuTransaction;
+use muqsit\invmenu\transaction\InvMenuTransactionResult;
+use pocketmine\block\VanillaBlocks;
 use pocketmine\entity\EntityDataHelper;
 use pocketmine\entity\EntityFactory;
 use pocketmine\entity\Human;
 use pocketmine\entity\Location;
 use pocketmine\entity\Skin;
 use pocketmine\inventory\Inventory;
+use pocketmine\item\VanillaItems;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
@@ -29,6 +33,13 @@ class Trashcan extends PluginBase {
     use SingletonTrait;
 
     public array $listWhoWannaDespawnTrashcan = [];
+
+    private array $inventoryBorderSlots = [
+        0, 1, 2, 3, 4, 5, 6, 7, 8,
+        9, 18, 27, 36, 45,
+        46, 47, 48, 50, 51, 52, 53,
+        17, 26, 35, 44, 49
+    ];
 
     protected function onEnable(): void {
         self::setInstance($this);
@@ -95,30 +106,54 @@ class Trashcan extends PluginBase {
         }
     }
 
-    public function sendTrashcanInv(Player $player, bool $withSound = true): void {
+    public function sendTrashcanInv(InvMenu $menu, Player $player, bool $withSound = true): void {
         if ($withSound) {
             $player->getWorld()->addSound($player->getPosition()->add(0.5, 0.5, 0.5), new BarrelOpenSound(), [$player]);
         }
 
-        $menu = InvMenu::create(InvMenuTypeIds::TYPE_DOUBLE_CHEST)->setName($this->getConfig()->get("trashcan-inv-name", "Trashcan"));
+        $menu->setName($this->getConfig()->get("trashcan-inv-name", "Trashcan"));
+        $menu->setListener(function(InvMenuTransaction $transaction) use ($menu): InvMenuTransactionResult {
+            if ($transaction->getItemClicked()->getNamedTag()->getInt("trashcan_confirm_clear_item", 0)) {
+                for ($i = 0; $i < 54; $i++) {
+                    if (in_array($i, $this->getInventoryBorderSlots(), true)) {
+                        continue;
+                    }
+
+                    $menu->getInventory()->clear($i);
+                }
+
+                $player = $transaction->getPlayer();
+                $player->getWorld()->addSound($player->getPosition(), new RandomOrbSound(), [$player]);
+                $player->sendMessage("[Trashcan]" . TextFormat::RED . " Your trashcan has been cleaned");
+
+                $clearItem = VanillaBlocks::BARRIER()->asItem()->setNamedTag(CompoundTag::create()->setInt("trashcan_clear_item", 1));
+                $menu->getInventory()->setItem(49, $clearItem->setCustomName(TextFormat::RESET . TextFormat::RED . "CLEAR TRASH-CAN"));
+                return $transaction->discard();
+            }
+
+            if ($transaction->getItemClicked()->getNamedTag()->getInt("trashcan_clear_item", 0)) {
+                $confirmClearItem = VanillaItems::NETHER_STAR()->setNamedTag(CompoundTag::create()->setInt("trashcan_confirm_clear_item", 1));
+                $menu->getInventory()->setItem(49, $confirmClearItem->setCustomName(TextFormat::RESET . TextFormat::GREEN . "Confirm Clear"));
+                return $transaction->discard();
+            }
+
+            if ($transaction->getItemClicked()->getNamedTag()->getInt("trashcan_border_item", 0)) {
+                return $transaction->discard();
+            }
+
+            return $transaction->continue();
+        });
 
         $menu->setInventoryCloseListener(function(Player $player, Inventory $inventory) use ($withSound): void {
-            $items = 0;
-
-            foreach ($inventory->getContents() as $item) {
-                $items += $item->getCount();
-            }
-
-            if ($items > 0) {
-                $inventory->clearAll();
-                $player->sendMessage("[Trashcan]" . TextFormat::YELLOW . " Disposed $items item(s)!");
-            }
-
             if ($withSound) {
                 $player->getWorld()->addSound($player->getPosition()->add(0.5, 0.5, 0.5), new BarrelCloseSound(), [$player]);
             }
         });
 
         $menu->send($player);
+    }
+
+    public function getInventoryBorderSlots(): array {
+        return $this->inventoryBorderSlots;
     }
 }
