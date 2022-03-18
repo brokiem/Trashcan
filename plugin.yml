@@ -1,0 +1,11 @@
+name: Trashcan
+main: broki\trashcan\Trashcan
+version: 1.0.0
+api: 4.0.0
+author: broki
+
+permissions:
+  trashcan.spawn:
+    default: op
+  trashcan.despawn:
+    default: op
