@@ -32,7 +32,7 @@ class TrashcanCommand extends Command implements PluginOwned {
                     }
 
                     $sender->sendMessage("[Trashcan]" . TextFormat::GREEN . " Trashcan successfully spawned!");
-                    Trashcan::getInstance()->spawnTrashcan($sender->getLocation());
+                Trashcan::getInstance()->spawnTrashcan($sender->getLocation(), $args[1] ?? null);
                     break;
                 case "despawn":
                 case "remove":
