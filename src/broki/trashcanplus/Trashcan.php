@@ -146,6 +146,9 @@ class Trashcan extends PluginBase {
         });
 
         $menu->setInventoryCloseListener(function(Player $player, Inventory $inventory) use ($withSound): void {
+            $clearItem = VanillaBlocks::BARRIER()->asItem()->setNamedTag(CompoundTag::create()->setInt("trashcan_clear_item", 1));
+            $inventory->setItem(49, $clearItem->setCustomName(TextFormat::RESET . TextFormat::RED . "CLEAR TRASH-CAN"));
+
             if ($withSound) {
                 $player->getWorld()->addSound($player->getPosition()->add(0.5, 0.5, 0.5), new BarrelCloseSound(), [$player]);
             }
