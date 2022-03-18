@@ -10,6 +10,7 @@ This plugin is based on [Trashcan Addon](https://mcpedl.com/trashcan-addon/) on 
 ## ✨ Features
 
 - Open or close the trashcan (sneak then tap) ✔
+- Throw or drop item to the trashcan ✔
 - Trashcan inventory that you can clear if full ✔
 - Trashcan item for spawning the trashcan entity ✔
 - Open or close trashcan soundfx ✔
