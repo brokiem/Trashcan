@@ -50,17 +50,21 @@ class TrashcanEntity extends Human {
 
                 if (in_array($attackerUuid, Trashcan::getInstance()->listWhoWannaDespawnTrashcan, true)) {
                     $attacker->sendMessage("[Trashcan]" . TextFormat::GREEN . " Despawn trashcan successfully");
+
+                    for ($i = 0; $i < 54; $i++) {
+                        if (in_array($i, Trashcan::getInstance()->getInventoryBorderSlots(), true)) {
+                            continue;
+                        }
+
+                        $this->getWorld()->dropItem($this->getPosition(), $this->getInvMenu()->getInventory()->getItem($i));
+                    }
+
                     $this->flagForDespawn();
 
                     unset(Trashcan::getInstance()->listWhoWannaDespawnTrashcan[array_search($attackerUuid, Trashcan::getInstance()->listWhoWannaDespawnTrashcan, true)]);
                 } else if ($attacker->isSneaking()) {
-                    if ($this->isOpened) {
-                        $this->setSkin(Trashcan::getInstance()->processSkin());
-                    } else {
-                        $this->setSkin(Trashcan::getInstance()->processSkin(true));
-                    }
+                    $this->setSkin(Trashcan::getInstance()->processSkin(!$this->isOpened));
                     $this->sendSkin();
-                    $this->isOpened = str_contains($this->getSkin()->getGeometryName(), "open");
                 } else {
                     Trashcan::getInstance()->sendTrashcanInv($this->getInvMenu(), $attacker);
                 }
@@ -86,13 +90,8 @@ class TrashcanEntity extends Human {
 
             unset(Trashcan::getInstance()->listWhoWannaDespawnTrashcan[array_search($attackerUuid, Trashcan::getInstance()->listWhoWannaDespawnTrashcan, true)]);
         } else if ($player->isSneaking()) {
-            if ($this->isOpened) {
-                $this->setSkin(Trashcan::getInstance()->processSkin());
-            } else {
-                $this->setSkin(Trashcan::getInstance()->processSkin(true));
-            }
+            $this->setSkin(Trashcan::getInstance()->processSkin(!$this->isOpened));
             $this->sendSkin();
-            $this->isOpened = str_contains($this->getSkin()->getGeometryName(), "open");
         } else {
             Trashcan::getInstance()->sendTrashcanInv($this->getInvMenu(), $player);
         }
@@ -141,5 +140,10 @@ class TrashcanEntity extends Human {
 
         $nbt->setTag("trashcan_inventory", new ListTag($items, NBT::TAG_Compound));
         return $nbt;
+    }
+
+    public function setSkin(Skin $skin): void {
+        parent::setSkin($skin);
+        $this->isOpened = str_contains($this->getSkin()->getGeometryName(), "open");
     }
 }
