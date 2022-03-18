@@ -20,6 +20,8 @@ use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\SingletonTrait;
 use pocketmine\utils\TextFormat;
+use pocketmine\world\sound\BarrelCloseSound;
+use pocketmine\world\sound\BarrelOpenSound;
 use pocketmine\world\World;
 use Ramsey\Uuid\Uuid;
 
@@ -92,10 +94,14 @@ class Trashcan extends PluginBase {
         }
     }
 
-    public function sendTrashcanInv(Player $player): void {
-        $menu = InvMenu::create(InvMenuTypeIds::TYPE_DOUBLE_CHEST)->setName("Trashcan");
+    public function sendTrashcanInv(Player $player, bool $withSound = true): void {
+        if ($withSound) {
+            $player->getWorld()->addSound($player->getPosition()->add(0.5, 0.5, 0.5), new BarrelOpenSound(), [$player]);
+        }
 
-        $menu->setInventoryCloseListener(function(Player $player, Inventory $inventory): void {
+        $menu = InvMenu::create(InvMenuTypeIds::TYPE_DOUBLE_CHEST)->setName($this->getConfig()->get("trashcan-inv-name", "Trashcan"));
+
+        $menu->setInventoryCloseListener(function(Player $player, Inventory $inventory) use ($withSound): void {
             $items = 0;
 
             foreach ($inventory->getContents() as $item) {
@@ -105,6 +111,10 @@ class Trashcan extends PluginBase {
             if ($items > 0) {
                 $inventory->clearAll();
                 $player->sendMessage("[Trashcan]" . TextFormat::YELLOW . " Disposed $items item(s)!");
+            }
+
+            if ($withSound) {
+                $player->getWorld()->addSound($player->getPosition()->add(0.5, 0.5, 0.5), new BarrelCloseSound(), [$player]);
             }
         });
 
