@@ -55,10 +55,11 @@ class Trashcan extends PluginBase {
 
         $this->saveResource("model/trashcan.png");
         $this->saveResource("model/trashcan.json");
+        $this->saveResource("model/trashcan_open.json");
     }
 
-    public function processSkin(): Skin {
-        $jsonPath = $this->getDataFolder() . "model/trashcan.json";
+    public function processSkin(bool $opened = false): Skin {
+        $jsonPath = $this->getDataFolder() . "model/trashcan" . ($opened ? "_open" : "") . ".json";
         $texturePath = $this->getDataFolder() . "model/trashcan.png";
 
         $size = getimagesize($texturePath);
@@ -80,7 +81,7 @@ class Trashcan extends PluginBase {
 
         $jsonContents = file_get_contents($jsonPath);
         $uuid = Uuid::uuid4()->toString();
-        return new Skin($uuid, $bytes, "", "geometry.trashcan", $jsonContents);
+        return new Skin($uuid, $bytes, "", "geometry.trashcan" . ($opened ? ".open" : ""), $jsonContents);
     }
 
     public function spawnTrashcan(Location $location, ?string $name): void {
