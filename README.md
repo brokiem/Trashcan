@@ -5,13 +5,14 @@ This plugin is based on [Trashcan Addon](https://mcpedl.com/trashcan-addon/) on 
 [![License](https://img.shields.io/github/license/brokiem/Trashcan)](https://github.com/brokiem/Trashcan)
 [![Star](https://img.shields.io/github/stars/brokiem/Trashcan)](https://github.com/brokiem/Trashcan/stargazers)
 [![Discord](https://img.shields.io/discord/830063409000087612?color=7389D8&label=discord)](https://discord.com/invite/jy6abSrjhQ)
-[![Poggit](https://poggit.pmmp.io/shield.dl.total/Trashcan3D)](https://poggit.pmmp.io/p/Trashcan3D)
+[![Poggit](https://poggit.pmmp.io/shield.dl.total/TrashcanPlus)](https://poggit.pmmp.io/p/TrashcanPlus)
 
 ## 💬 Commands
 
 | Command                                   | Description                   | Permission             | Default    |
 |-------------------------------------------|-------------------------------|------------------------|------------|
-| ```/trashcan```                           | ```Trashcan command list```   | ```none```             | ```true``` |
+| ```/trashcan```                           | ```Trashcan command```        | ```none```             | ```true``` |
+| ```/trashcan help```                      | ```Trashcan help command```   | ```none```             | ```true``` |
 | ```/trashcan spawn [optional: nametag]``` | ```Spawn trashcan entity```   | ```trashcan.spawn```   | ```op```   |
 | ```/trashcan despawn```                   | ```Despawn trashcan entity``` | ```trashcan.despawn``` | ```op```   |
 
