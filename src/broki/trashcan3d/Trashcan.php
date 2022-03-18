@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace broki\trashcan;
+namespace broki\trashcan3d;
 
-use broki\trashcan\command\TrashcanCommand;
-use broki\trashcan\entity\TrashcanEntity;
+use broki\trashcan3d\command\TrashcanCommand;
+use broki\trashcan3d\entity\TrashcanEntity;
 use muqsit\invmenu\InvMenu;
 use muqsit\invmenu\InvMenuHandler;
 use muqsit\invmenu\type\InvMenuTypeIds;

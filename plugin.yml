@@ -1,5 +1,5 @@
-name: Trashcan
-main: broki\trashcan\Trashcan
+name: Trashcan3D
+main: broki\trashcan3d\Trashcan
 version: 1.0.0
 api: 4.0.0
 author: broki

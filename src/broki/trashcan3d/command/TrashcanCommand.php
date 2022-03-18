@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace broki\trashcan\command;
+namespace broki\trashcan3d\command;
 
-use broki\trashcan\Trashcan;
+use broki\trashcan3d\Trashcan;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
