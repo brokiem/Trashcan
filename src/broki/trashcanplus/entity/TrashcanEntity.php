@@ -10,12 +10,14 @@ use muqsit\invmenu\type\InvMenuTypeIds;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\entity\Human;
 use pocketmine\entity\Location;
+use pocketmine\entity\object\ItemEntity;
 use pocketmine\entity\Skin;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
+use pocketmine\math\AxisAlignedBB;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\NBT;
 use pocketmine\nbt\tag\CompoundTag;
@@ -151,5 +153,29 @@ class TrashcanEntity extends Human {
     public function setSkin(Skin $skin): void {
         parent::setSkin($skin);
         $this->isOpened = str_contains($this->getSkin()->getGeometryName(), "open");
+    }
+
+    protected function entityBaseTick(int $tickDiff = 1): bool {
+        if ($this->isOpened()) {
+            $axis = new AxisAlignedBB(
+                $this->getPosition()->getX(),
+                $this->getPosition()->getY(),
+                $this->getPosition()->getZ(),
+                $this->getPosition()->getX() + 1.3,
+                $this->getPosition()->getY() + 1.25,
+                $this->getPosition()->getZ() + 1.3
+            );
+
+            $entities = $this->getWorld()->getNearbyEntities($axis);
+
+            foreach ($entities as $entity) {
+                if ($entity instanceof ItemEntity) {
+                    $entity->flagForDespawn();
+                    $this->getInvMenu()->getInventory()->addItem($entity->getItem());
+                }
+            }
+        }
+
+        return parent::entityBaseTick($tickDiff);
     }
 }
