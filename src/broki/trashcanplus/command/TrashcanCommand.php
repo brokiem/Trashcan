@@ -57,7 +57,7 @@ class TrashcanCommand extends Command implements PluginOwned {
                     Trashcan::getInstance()->listWhoWannaDespawnTrashcan[] = $sender->getUniqueId()->toString();
                     break;
                 case "help":
-                    $sender->sendMessage("\n§7---- ---- ---- - ---- ---- ----\n§eCommand List:\n§2» /trashcan spawn <optional: nametag>\n§2» /trashcan despawn\n§2» /trashcan help\n§7---- ---- ---- - ---- ---- ----");
+                    $sender->sendMessage("\n§7---- ---- ---- - ---- ---- ----\n§eCommand List:\n§2» /trashcan get\n§2» /trashcan spawn <optional: nametag>\n§2» /trashcan despawn\n§2» /trashcan help\n§7---- ---- ---- - ---- ---- ----");
                     break;
                 default:
                     $sender->sendMessage(TextFormat::RED . "Subcommand '$args[0]' not found! Try '/trashcan help' for help.");
