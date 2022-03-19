@@ -204,8 +204,10 @@ class TrashcanEntity extends Human {
 
             foreach ($entities as $entity) {
                 if ($entity instanceof ItemEntity) {
-                    $entity->flagForDespawn();
-                    $this->getInvMenu()->getInventory()->addItem($entity->getItem());
+                    if ($this->getInvMenu()->getInventory()->canAddItem($entity->getItem())) {
+                        $entity->flagForDespawn();
+                        $this->getInvMenu()->getInventory()->addItem($entity->getItem());
+                    }
                 }
             }
         }
