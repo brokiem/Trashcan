@@ -84,6 +84,11 @@ class TrashcanEntity extends Human {
 
             unset(Trashcan::getInstance()->listWhoWannaDespawnTrashcan[array_search($playerUuid, Trashcan::getInstance()->listWhoWannaDespawnTrashcan, true)]);
         } else if ($player->isSneaking()) {
+            if (!Trashcan::getInstance()->getConfig()->get("enable-throw-item-to-trash", true)) {
+                $player->sendMessage("[Trashcan]" . TextFormat::YELLOW . " Open/close feature is disabled by admin");
+                return;
+            }
+
             if ($this->isOpened) {
                 $player->getWorld()->addSound($player->getPosition()->add(0.5, 0.5, 0.5), new BarrelCloseSound(), [$player]);
             } else {
