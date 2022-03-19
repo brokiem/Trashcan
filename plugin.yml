@@ -8,6 +8,8 @@ permissions:
   trashcan.spawn:
     default: op
   trashcan.despawn:
-    default: op
+    default: true
   trashcan.get:
+    default: op
+  trashcan.despawn.force:
     default: op

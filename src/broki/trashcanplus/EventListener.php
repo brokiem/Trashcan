@@ -17,7 +17,7 @@ class EventListener implements Listener {
             if ($event->getItem()->getNamedTag()->getInt("trashcan_item", 0)) {
                 $event->getPlayer()->sendMessage("[Trashcan]" . TextFormat::GREEN . " Trashcan successfully spawned!");
                 $event->getPlayer()->getInventory()->setItemInHand(VanillaBlocks::AIR()->asItem());
-                Trashcan::getInstance()->spawnTrashcan(Location::fromObject($event->getBlock()->getPosition()->add(0.5, 0.8, 0.5), $event->getBlock()->getPosition()->getWorld()), null);
+                Trashcan::getInstance()->spawnTrashcan(Location::fromObject($event->getBlock()->getPosition()->add(0.5, 0.8, 0.5), $event->getBlock()->getPosition()->getWorld()), ownerXuid: $event->getPlayer()->getXuid());
                 $event->cancel();
             }
         }

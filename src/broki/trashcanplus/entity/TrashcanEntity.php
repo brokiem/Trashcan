@@ -29,6 +29,7 @@ class TrashcanEntity extends Human {
 
     private bool $isOpened;
     private InvMenu $invMenu;
+    private ?string $ownerXuid = null;
 
     public function __construct(Location $location, Skin $skin, ?CompoundTag $nbt = null) {
         parent::__construct($location, $skin, $nbt);
@@ -45,6 +46,15 @@ class TrashcanEntity extends Human {
         return $this->invMenu;
     }
 
+    public function setOwner(string $xuid): self {
+        $this->ownerXuid = $xuid;
+        return $this;
+    }
+
+    public function getOwnerXuid(): ?string {
+        return $this->ownerXuid;
+    }
+
     public function attack(EntityDamageEvent $source): void {
         if ($source instanceof EntityDamageByEntityEvent) {
             $attacker = $source->getDamager();
@@ -53,6 +63,12 @@ class TrashcanEntity extends Human {
                 $attackerUuid = $attacker->getUniqueId()->toString();
 
                 if (in_array($attackerUuid, Trashcan::getInstance()->listWhoWannaDespawnTrashcan, true)) {
+                    if ($this->getOwnerXuid() !== null and $attacker->getXuid() !== $this->getOwnerXuid() and !$attacker->hasPermission("trashcan.despawn.force")) {
+                        $attacker->sendMessage("[Trashcan]" . TextFormat::YELLOW . " You don't own this trashcan!");
+                        unset(Trashcan::getInstance()->listWhoWannaDespawnTrashcan[array_search($attackerUuid, Trashcan::getInstance()->listWhoWannaDespawnTrashcan, true)]);
+                        return;
+                    }
+
                     $attacker->sendMessage("[Trashcan]" . TextFormat::GREEN . " Despawn trashcan successfully");
 
                     for ($i = 0; $i < 54; $i++) {
@@ -83,6 +99,12 @@ class TrashcanEntity extends Human {
         $attackerUuid = $player->getUniqueId()->toString();
 
         if (in_array($attackerUuid, Trashcan::getInstance()->listWhoWannaDespawnTrashcan, true)) {
+            if ($this->getOwnerXuid() !== null and $player->getXuid() !== $this->getOwnerXuid() and !$player->hasPermission("trashcan.despawn.force")) {
+                $player->sendMessage("[Trashcan]" . TextFormat::YELLOW . " You don't own this trashcan!");
+                unset(Trashcan::getInstance()->listWhoWannaDespawnTrashcan[array_search($attackerUuid, Trashcan::getInstance()->listWhoWannaDespawnTrashcan, true)]);
+                return false;
+            }
+
             $player->sendMessage("[Trashcan]" . TextFormat::GREEN . " Despawn trashcan successfully");
 
             for ($i = 0; $i < 54; $i++) {
@@ -129,6 +151,11 @@ class TrashcanEntity extends Human {
         $invMenu->getInventory()->setItem(53, $clearItem->setCustomName(TextFormat::RESET . TextFormat::RED . "CLEAR TRASH-CAN"));
 
         $this->invMenu = $invMenu;
+
+        $ownerXuid = $nbt->getString("trashcan_owner_xuid", "none");
+        if ($ownerXuid !== "none") {
+            $this->setOwner($ownerXuid);
+        }
     }
 
     public function saveNBT(): CompoundTag {
@@ -146,6 +173,10 @@ class TrashcanEntity extends Human {
         }
 
         $nbt->setTag("trashcan_inventory", new ListTag($items, NBT::TAG_Compound));
+
+        if ($this->getOwnerXuid() !== null) {
+            $nbt->setString("trashcan_owner_xuid", $this->getOwnerXuid());
+        }
         return $nbt;
     }
 

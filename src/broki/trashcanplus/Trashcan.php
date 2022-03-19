@@ -98,14 +98,14 @@ class Trashcan extends PluginBase {
         return new Skin($uuid, $bytes, "", "geometry.trashcan" . ($opened ? ".open" : ""), $jsonContents);
     }
 
-    public function spawnTrashcan(Location $location, ?string $name): void {
+    public function spawnTrashcan(Location $location, ?string $nametag = null, ?string $ownerXuid = null): void {
         $locationMod = Location::fromObject($location->add(0, 0.5, 0), $location->getWorld());
 
         $human = new TrashcanEntity($locationMod, $this->processSkin());
-        $human->spawnToAll();
+        $human->setOwner($ownerXuid)->spawnToAll();
 
-        if ($name !== null) {
-            $human->setNameTag($name);
+        if ($nametag !== null) {
+            $human->setNameTag($nametag);
         }
     }
 

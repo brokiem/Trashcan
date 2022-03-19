@@ -45,7 +45,7 @@ class TrashcanCommand extends Command implements PluginOwned {
                     }
 
                     $sender->sendMessage("[Trashcan]" . TextFormat::GREEN . " Trashcan successfully spawned!");
-                    Trashcan::getInstance()->spawnTrashcan($sender->getLocation(), $args[1] ?? null);
+                Trashcan::getInstance()->spawnTrashcan($sender->getLocation(), $args[1] ?? null, $sender->getXuid());
                     break;
                 case "despawn":
                 case "remove":
