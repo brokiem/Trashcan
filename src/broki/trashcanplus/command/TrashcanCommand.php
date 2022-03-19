@@ -7,14 +7,10 @@ namespace broki\trashcanplus\command;
 use broki\trashcanplus\Trashcan;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
-use pocketmine\item\ItemFactory;
-use pocketmine\item\ItemIds;
-use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\player\Player;
 use pocketmine\plugin\Plugin;
 use pocketmine\plugin\PluginOwned;
 use pocketmine\utils\TextFormat;
-use Ramsey\Uuid\Uuid;
 
 class TrashcanCommand extends Command implements PluginOwned {
 
@@ -35,23 +31,22 @@ class TrashcanCommand extends Command implements PluginOwned {
                         return true;
                     }
 
-                    $trashcanItem = ItemFactory::getInstance()->get(ItemIds::CAULDRON)->setNamedTag(CompoundTag::create()->setInt("trashcan_item", 1)->setString("id", Uuid::uuid4()->toString()));
-                    $sender->getInventory()->addItem($trashcanItem->setCustomName(TextFormat::RESET . TextFormat::WHITE . "Trashcan"));
+                    Trashcan::getInstance()->giveTrashcanItem($sender);
                     break;
                 case "spawn":
                 case "create":
-                if (!$sender->hasPermission("trashcanplus.spawn")) {
-                    return true;
-                }
+                    if (!$sender->hasPermission("trashcanplus.spawn")) {
+                        return true;
+                    }
 
                     $sender->sendMessage("[Trashcan]" . TextFormat::GREEN . " Trashcan successfully spawned!");
-                Trashcan::getInstance()->spawnTrashcan($sender->getLocation(), $args[1] ?? null, $sender->getXuid());
+                    Trashcan::getInstance()->spawnTrashcan($sender->getLocation(), $args[1] ?? null, $sender->getXuid());
                     break;
                 case "despawn":
                 case "remove":
-                if (!$sender->hasPermission("trashcanplus.despawn")) {
-                    return true;
-                }
+                    if (!$sender->hasPermission("trashcanplus.despawn")) {
+                        return true;
+                    }
 
                     $sender->sendMessage("[Trashcan]" . TextFormat::RED . " Tap the trashcan you want to despawn");
                     Trashcan::getInstance()->listWhoWannaDespawnTrashcan[] = $sender->getUniqueId()->toString();

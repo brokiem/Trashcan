@@ -57,59 +57,14 @@ class TrashcanEntity extends Human {
         return $this->ownerXuid;
     }
 
-    public function attack(EntityDamageEvent $source): void {
-        if ($source instanceof EntityDamageByEntityEvent) {
-            $attacker = $source->getDamager();
+    private function processInteract(Player $player): void {
+        $playerUuid = $player->getUniqueId()->toString();
 
-            if ($attacker instanceof Player) {
-                $attackerUuid = $attacker->getUniqueId()->toString();
-
-                if (in_array($attackerUuid, Trashcan::getInstance()->listWhoWannaDespawnTrashcan, true)) {
-                    if ($this->getOwnerXuid() !== null and $attacker->getXuid() !== $this->getOwnerXuid() and !$attacker->hasPermission("trashcanplus.despawn.force")) {
-                        $attacker->sendMessage("[Trashcan]" . TextFormat::YELLOW . " You don't own this trashcan!");
-                        unset(Trashcan::getInstance()->listWhoWannaDespawnTrashcan[array_search($attackerUuid, Trashcan::getInstance()->listWhoWannaDespawnTrashcan, true)]);
-                        return;
-                    }
-
-                    $attacker->sendMessage("[Trashcan]" . TextFormat::GREEN . " Despawn trashcan successfully");
-
-                    for ($i = 0; $i < 54; $i++) {
-                        if (in_array($i, Trashcan::getInstance()->getInventoryBorderSlots(), true)) {
-                            continue;
-                        }
-
-                        $this->getWorld()->dropItem($this->getPosition(), $this->getInvMenu()->getInventory()->getItem($i));
-                    }
-
-                    $trashcanItem = ItemFactory::getInstance()->get(ItemIds::CAULDRON)->setNamedTag(CompoundTag::create()->setInt("trashcan_item", 1)->setString("id", Uuid::uuid4()->toString()));
-                    $this->getWorld()->dropItem($this->getPosition(), $trashcanItem->setCustomName(TextFormat::RESET . TextFormat::WHITE . "Trashcan"));
-
-                    $this->flagForDespawn();
-
-                    unset(Trashcan::getInstance()->listWhoWannaDespawnTrashcan[array_search($attackerUuid, Trashcan::getInstance()->listWhoWannaDespawnTrashcan, true)]);
-                } else if ($attacker->isSneaking()) {
-                    if ($this->isOpened) {
-                        $attacker->getWorld()->addSound($attacker->getPosition()->add(0.5, 0.5, 0.5), new BarrelCloseSound(), [$attacker]);
-                    } else {
-                        $attacker->getWorld()->addSound($attacker->getPosition()->add(0.5, 0.5, 0.5), new BarrelOpenSound(), [$attacker]);
-                    }
-                    $this->setSkin(Trashcan::getInstance()->processSkin(!$this->isOpened));
-                    $this->sendSkin();
-                } else {
-                    Trashcan::getInstance()->sendTrashcanInv($this->getInvMenu(), $attacker);
-                }
-            }
-        }
-    }
-
-    public function onInteract(Player $player, Vector3 $clickPos): bool {
-        $attackerUuid = $player->getUniqueId()->toString();
-
-        if (in_array($attackerUuid, Trashcan::getInstance()->listWhoWannaDespawnTrashcan, true)) {
+        if (in_array($playerUuid, Trashcan::getInstance()->listWhoWannaDespawnTrashcan, true)) {
             if ($this->getOwnerXuid() !== null and $player->getXuid() !== $this->getOwnerXuid() and !$player->hasPermission("trashcanplus.despawn.force")) {
                 $player->sendMessage("[Trashcan]" . TextFormat::YELLOW . " You don't own this trashcan!");
-                unset(Trashcan::getInstance()->listWhoWannaDespawnTrashcan[array_search($attackerUuid, Trashcan::getInstance()->listWhoWannaDespawnTrashcan, true)]);
-                return false;
+                unset(Trashcan::getInstance()->listWhoWannaDespawnTrashcan[array_search($playerUuid, Trashcan::getInstance()->listWhoWannaDespawnTrashcan, true)]);
+                return;
             }
 
             $player->sendMessage("[Trashcan]" . TextFormat::GREEN . " Despawn trashcan successfully");
@@ -122,9 +77,12 @@ class TrashcanEntity extends Human {
                 $this->getWorld()->dropItem($this->getPosition(), $this->getInvMenu()->getInventory()->getItem($i));
             }
 
+            $trashcanItem = ItemFactory::getInstance()->get(ItemIds::CAULDRON)->setNamedTag(CompoundTag::create()->setInt("trashcan_item", 1)->setString("id", Uuid::uuid4()->toString()));
+            $this->getWorld()->dropItem($this->getPosition(), $trashcanItem->setCustomName(TextFormat::RESET . TextFormat::WHITE . "Trashcan"));
+
             $this->flagForDespawn();
 
-            unset(Trashcan::getInstance()->listWhoWannaDespawnTrashcan[array_search($attackerUuid, Trashcan::getInstance()->listWhoWannaDespawnTrashcan, true)]);
+            unset(Trashcan::getInstance()->listWhoWannaDespawnTrashcan[array_search($playerUuid, Trashcan::getInstance()->listWhoWannaDespawnTrashcan, true)]);
         } else if ($player->isSneaking()) {
             if ($this->isOpened) {
                 $player->getWorld()->addSound($player->getPosition()->add(0.5, 0.5, 0.5), new BarrelCloseSound(), [$player]);
@@ -136,7 +94,20 @@ class TrashcanEntity extends Human {
         } else {
             Trashcan::getInstance()->sendTrashcanInv($this->getInvMenu(), $player);
         }
+    }
 
+    public function attack(EntityDamageEvent $source): void {
+        if ($source instanceof EntityDamageByEntityEvent) {
+            $attacker = $source->getDamager();
+
+            if ($attacker instanceof Player) {
+                $this->processInteract($attacker);
+            }
+        }
+    }
+
+    public function onInteract(Player $player, Vector3 $clickPos): bool {
+        $this->processInteract($player);
         return false;
     }
 

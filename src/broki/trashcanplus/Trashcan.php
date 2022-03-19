@@ -18,6 +18,8 @@ use pocketmine\entity\Human;
 use pocketmine\entity\Location;
 use pocketmine\entity\Skin;
 use pocketmine\inventory\Inventory;
+use pocketmine\item\ItemFactory;
+use pocketmine\item\ItemIds;
 use pocketmine\item\VanillaItems;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\player\Player;
@@ -157,6 +159,11 @@ class Trashcan extends PluginBase {
         });
 
         $menu->send($player);
+    }
+
+    public function giveTrashcanItem(Player $player): void {
+        $trashcanItem = ItemFactory::getInstance()->get(ItemIds::CAULDRON)->setNamedTag(CompoundTag::create()->setInt("trashcan_item", 1)->setString("id", Uuid::uuid4()->toString()));
+        $player->getInventory()->addItem($trashcanItem->setCustomName(TextFormat::RESET . TextFormat::WHITE . "Trashcan"));
     }
 
     public function getInventoryBorderSlots(): array {
