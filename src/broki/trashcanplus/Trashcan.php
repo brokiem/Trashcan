@@ -35,10 +35,12 @@ class Trashcan extends PluginBase {
     public array $listWhoWannaDespawnTrashcan = [];
 
     private array $inventoryBorderSlots = [
-        0, 1, 2, 3, 4, 5, 6, 7, 8,
-        9, 18, 27, 36, 45,
+        0, 1, 2, 6, 7, 8, 24, 25,
+        9, 18, 27, 36, 45, 28, 29,
         46, 47, 48, 50, 51, 52, 53,
-        17, 26, 35, 44, 49
+        17, 26, 35, 44, 49, 33, 34,
+        10, 11, 15, 16, 19, 20,
+        37, 38, 39, 40, 41, 42, 43
     ];
 
     protected function onEnable(): void {
@@ -128,13 +130,13 @@ class Trashcan extends PluginBase {
                 $player->sendMessage("[Trashcan]" . TextFormat::RED . " Your trashcan has been cleaned");
 
                 $clearItem = VanillaBlocks::BARRIER()->asItem()->setNamedTag(CompoundTag::create()->setInt("trashcan_clear_item", 1));
-                $menu->getInventory()->setItem(49, $clearItem->setCustomName(TextFormat::RESET . TextFormat::RED . "CLEAR TRASH-CAN"));
+                $menu->getInventory()->setItem(53, $clearItem->setCustomName(TextFormat::RESET . TextFormat::RED . "CLEAR TRASH-CAN"));
                 return $transaction->discard();
             }
 
             if ($transaction->getItemClicked()->getNamedTag()->getInt("trashcan_clear_item", 0)) {
                 $confirmClearItem = VanillaItems::NETHER_STAR()->setNamedTag(CompoundTag::create()->setInt("trashcan_confirm_clear_item", 1));
-                $menu->getInventory()->setItem(49, $confirmClearItem->setCustomName(TextFormat::RESET . TextFormat::GREEN . "Confirm Clear"));
+                $menu->getInventory()->setItem(53, $confirmClearItem->setCustomName(TextFormat::RESET . TextFormat::GREEN . "Confirm Clear"));
                 return $transaction->discard();
             }
 
@@ -147,7 +149,7 @@ class Trashcan extends PluginBase {
 
         $menu->setInventoryCloseListener(function(Player $player, Inventory $inventory) use ($withSound): void {
             $clearItem = VanillaBlocks::BARRIER()->asItem()->setNamedTag(CompoundTag::create()->setInt("trashcan_clear_item", 1));
-            $inventory->setItem(49, $clearItem->setCustomName(TextFormat::RESET . TextFormat::RED . "CLEAR TRASH-CAN"));
+            $inventory->setItem(53, $clearItem->setCustomName(TextFormat::RESET . TextFormat::RED . "CLEAR TRASH-CAN"));
 
             if ($withSound) {
                 $player->getWorld()->addSound($player->getPosition()->add(0.5, 0.5, 0.5), new BarrelCloseSound(), [$player]);

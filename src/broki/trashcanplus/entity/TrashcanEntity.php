@@ -126,7 +126,7 @@ class TrashcanEntity extends Human {
         }
 
         $clearItem = VanillaBlocks::BARRIER()->asItem()->setNamedTag(CompoundTag::create()->setInt("trashcan_clear_item", 1));
-        $invMenu->getInventory()->setItem(49, $clearItem->setCustomName(TextFormat::RESET . TextFormat::RED . "CLEAR TRASH-CAN"));
+        $invMenu->getInventory()->setItem(53, $clearItem->setCustomName(TextFormat::RESET . TextFormat::RED . "CLEAR TRASH-CAN"));
 
         $this->invMenu = $invMenu;
     }
