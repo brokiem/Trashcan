@@ -155,7 +155,7 @@ class TrashcanEntity extends Human {
     }
 
     protected function entityBaseTick(int $tickDiff = 1): bool {
-        if ($this->isOpened()) {
+        if ($this->isOpened() and Trashcan::getInstance()->getConfig()->get("enable-throw-item-to-trash", true)) {
             $bb = $this->getBoundingBox()->expandedCopy(0.4, 0.7, 0.4);
             $entities = $this->getWorld()->getNearbyEntities($bb);
 

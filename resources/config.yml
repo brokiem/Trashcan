@@ -1,1 +1,7 @@
+# DO NOT CHANGE THIS VALUE
+v: 1
+#------------------------#
+
+# Trashcan config file
 trashcan-inv-name: "Trashcan"
+enable-throw-item-to-trash: true
