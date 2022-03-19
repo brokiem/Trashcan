@@ -50,7 +50,7 @@ class Trashcan extends PluginBase {
 
         $this->checkResources();
 
-        $this->getServer()->getCommandMap()->register("trashcan", new TrashcanCommand("trashcan", "trashcan command"));
+        $this->getServer()->getCommandMap()->register("trashcan", new TrashcanCommand("trashcan", "trashcan command", null, ["trashcanplus"]));
         $this->getServer()->getPluginManager()->registerEvents(new EventListener(), $this);
 
         EntityFactory::getInstance()->register(TrashcanEntity::class, function(World $world, CompoundTag $nbt): TrashcanEntity {
