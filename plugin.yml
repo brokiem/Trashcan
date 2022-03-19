@@ -5,11 +5,11 @@ api: 4.0.0
 author: broki
 
 permissions:
-  trashcan.spawn:
+  trashcanplus.spawn:
     default: op
-  trashcan.despawn:
+  trashcanplus.despawn:
     default: true
-  trashcan.get:
+  trashcanplus.get:
     default: op
-  trashcan.despawn.force:
+  trashcanplus.despawn.force:
     default: op

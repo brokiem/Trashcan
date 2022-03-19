@@ -31,7 +31,7 @@ class TrashcanCommand extends Command implements PluginOwned {
             switch (strtolower($args[0])) {
                 case "item":
                 case "get":
-                    if (!$sender->hasPermission("trashcan.get")) {
+                    if (!$sender->hasPermission("trashcanplus.get")) {
                         return true;
                     }
 
@@ -40,18 +40,18 @@ class TrashcanCommand extends Command implements PluginOwned {
                     break;
                 case "spawn":
                 case "create":
-                    if (!$sender->hasPermission("trashcan.spawn")) {
-                        return true;
-                    }
+                if (!$sender->hasPermission("trashcanplus.spawn")) {
+                    return true;
+                }
 
                     $sender->sendMessage("[Trashcan]" . TextFormat::GREEN . " Trashcan successfully spawned!");
                 Trashcan::getInstance()->spawnTrashcan($sender->getLocation(), $args[1] ?? null, $sender->getXuid());
                     break;
                 case "despawn":
                 case "remove":
-                    if (!$sender->hasPermission("trashcan.despawn")) {
-                        return true;
-                    }
+                if (!$sender->hasPermission("trashcanplus.despawn")) {
+                    return true;
+                }
 
                     $sender->sendMessage("[Trashcan]" . TextFormat::RED . " Tap the trashcan you want to despawn");
                     Trashcan::getInstance()->listWhoWannaDespawnTrashcan[] = $sender->getUniqueId()->toString();

@@ -65,7 +65,7 @@ class TrashcanEntity extends Human {
                 $attackerUuid = $attacker->getUniqueId()->toString();
 
                 if (in_array($attackerUuid, Trashcan::getInstance()->listWhoWannaDespawnTrashcan, true)) {
-                    if ($this->getOwnerXuid() !== null and $attacker->getXuid() !== $this->getOwnerXuid() and !$attacker->hasPermission("trashcan.despawn.force")) {
+                    if ($this->getOwnerXuid() !== null and $attacker->getXuid() !== $this->getOwnerXuid() and !$attacker->hasPermission("trashcanplus.despawn.force")) {
                         $attacker->sendMessage("[Trashcan]" . TextFormat::YELLOW . " You don't own this trashcan!");
                         unset(Trashcan::getInstance()->listWhoWannaDespawnTrashcan[array_search($attackerUuid, Trashcan::getInstance()->listWhoWannaDespawnTrashcan, true)]);
                         return;
@@ -106,7 +106,7 @@ class TrashcanEntity extends Human {
         $attackerUuid = $player->getUniqueId()->toString();
 
         if (in_array($attackerUuid, Trashcan::getInstance()->listWhoWannaDespawnTrashcan, true)) {
-            if ($this->getOwnerXuid() !== null and $player->getXuid() !== $this->getOwnerXuid() and !$player->hasPermission("trashcan.despawn.force")) {
+            if ($this->getOwnerXuid() !== null and $player->getXuid() !== $this->getOwnerXuid() and !$player->hasPermission("trashcanplus.despawn.force")) {
                 $player->sendMessage("[Trashcan]" . TextFormat::YELLOW . " You don't own this trashcan!");
                 unset(Trashcan::getInstance()->listWhoWannaDespawnTrashcan[array_search($attackerUuid, Trashcan::getInstance()->listWhoWannaDespawnTrashcan, true)]);
                 return false;
