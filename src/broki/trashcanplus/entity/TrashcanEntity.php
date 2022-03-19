@@ -17,7 +17,6 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
-use pocketmine\math\AxisAlignedBB;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\NBT;
 use pocketmine\nbt\tag\CompoundTag;
@@ -157,16 +156,8 @@ class TrashcanEntity extends Human {
 
     protected function entityBaseTick(int $tickDiff = 1): bool {
         if ($this->isOpened()) {
-            $axis = new AxisAlignedBB(
-                $this->getPosition()->getX(),
-                $this->getPosition()->getY(),
-                $this->getPosition()->getZ(),
-                $this->getPosition()->getX() + 1.3,
-                $this->getPosition()->getY() + 1.25,
-                $this->getPosition()->getZ() + 1.3
-            );
-
-            $entities = $this->getWorld()->getNearbyEntities($axis);
+            $bb = $this->getBoundingBox()->expandedCopy(0.4, 0.7, 0.4);
+            $entities = $this->getWorld()->getNearbyEntities($bb);
 
             foreach ($entities as $entity) {
                 if ($entity instanceof ItemEntity) {
