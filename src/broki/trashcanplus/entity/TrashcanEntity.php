@@ -23,6 +23,8 @@ use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\ListTag;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
+use pocketmine\world\sound\BarrelCloseSound;
+use pocketmine\world\sound\BarrelOpenSound;
 use Ramsey\Uuid\Uuid;
 
 class TrashcanEntity extends Human {
@@ -86,6 +88,11 @@ class TrashcanEntity extends Human {
 
                     unset(Trashcan::getInstance()->listWhoWannaDespawnTrashcan[array_search($attackerUuid, Trashcan::getInstance()->listWhoWannaDespawnTrashcan, true)]);
                 } else if ($attacker->isSneaking()) {
+                    if ($this->isOpened) {
+                        $attacker->getWorld()->addSound($attacker->getPosition()->add(0.5, 0.5, 0.5), new BarrelCloseSound(), [$attacker]);
+                    } else {
+                        $attacker->getWorld()->addSound($attacker->getPosition()->add(0.5, 0.5, 0.5), new BarrelOpenSound(), [$attacker]);
+                    }
                     $this->setSkin(Trashcan::getInstance()->processSkin(!$this->isOpened));
                     $this->sendSkin();
                 } else {
@@ -119,6 +126,11 @@ class TrashcanEntity extends Human {
 
             unset(Trashcan::getInstance()->listWhoWannaDespawnTrashcan[array_search($attackerUuid, Trashcan::getInstance()->listWhoWannaDespawnTrashcan, true)]);
         } else if ($player->isSneaking()) {
+            if ($this->isOpened) {
+                $player->getWorld()->addSound($player->getPosition()->add(0.5, 0.5, 0.5), new BarrelCloseSound(), [$player]);
+            } else {
+                $player->getWorld()->addSound($player->getPosition()->add(0.5, 0.5, 0.5), new BarrelOpenSound(), [$player]);
+            }
             $this->setSkin(Trashcan::getInstance()->processSkin(!$this->isOpened));
             $this->sendSkin();
         } else {
