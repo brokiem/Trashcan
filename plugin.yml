@@ -13,3 +13,5 @@ permissions:
     default: op
   trashcanplus.despawn.force:
     default: op
+  trashcanplus.reload:
+    default: op

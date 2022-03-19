@@ -21,13 +21,14 @@ This plugin is based on [Trashcan Addon](https://mcpedl.com/trashcan-addon/) on 
 
 ## 💬 Commands
 
-| Command                                   | Description                   | Permission             | Default    |
-|-------------------------------------------|-------------------------------|------------------------|------------|
-| ```/trashcan```                           | ```Trashcan command```        | ```none```             | ```true``` |
-| ```/trashcan help```                      | ```Trashcan help command```   | ```none```             | ```true``` |
+| Command                                   | Description                   | Permission                 | Default    |
+|-------------------------------------------|-------------------------------|----------------------------|------------|
+| ```/trashcan```                           | ```Trashcan command```        | ```none```                 | ```true``` |
+| ```/trashcan help```                      | ```Trashcan help command```   | ```none```                 | ```true``` |
 | ```/trashcan get```                       | ```Get Trashcan item```       | ```trashcanplus.get```     | ```op```   |
 | ```/trashcan spawn [optional: nametag]``` | ```Spawn trashcan entity```   | ```trashcanplus.spawn```   | ```op```   |
 | ```/trashcan despawn```                   | ```Despawn trashcan entity``` | ```trashcanplus.despawn``` | ```true``` |
+| ```/trashcan reload```                    | ```Reload plugin config```    | ```trashcanplus.reload```  | ```op```   |
 
 ## ❔ Issues
 
