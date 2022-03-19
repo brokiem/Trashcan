@@ -7,6 +7,9 @@ This plugin is based on [Trashcan Addon](https://mcpedl.com/trashcan-addon/) on 
 [![Discord](https://img.shields.io/discord/830063409000087612?color=7389D8&label=discord)](https://discord.com/invite/jy6abSrjhQ)
 [![Poggit](https://poggit.pmmp.io/shield.dl.total/TrashcanPlus)](https://poggit.pmmp.io/p/TrashcanPlus)
 
+## ▶ Demo
+- Link to demo: https://youtu.be/mA4Erj7iThw
+
 ## ✨ Features
 
 - Open or close the trashcan (sneak then tap) ✔
