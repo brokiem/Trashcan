@@ -1,6 +1,6 @@
 <h1>TrashcanPlus<img src="assets/icon.png" height="64" width="64" align="left" alt=""></h1><br>
 
-<b>Trashcan with 3D trashcan model.</b><br>
+<b>3D Trashcan plugin with a bunch of features.</b><br>
 This plugin is based on [Trashcan Addon](https://mcpedl.com/trashcan-addon/) on MCPEDL<br><br>
 [![License](https://img.shields.io/github/license/brokiem/Trashcan)](https://github.com/brokiem/Trashcan)
 [![Star](https://img.shields.io/github/stars/brokiem/Trashcan)](https://github.com/brokiem/Trashcan/stargazers)
