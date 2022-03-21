@@ -1,4 +1,4 @@
-<h1>TrashcanPlus<img src="assets/icon.png" height="64" width="64" align="left" alt=""></h1><br>
+<h1>TrashcanPlus<img src="https://raw.githubusercontent.com/brokiem/Trashcan/master/assets/icon.png" height="64" width="64" align="left" alt=""></h1><br>
 
 <b>3D Trashcan plugin with a bunch of features.</b><br>
 This plugin is based on [Trashcan Addon](https://mcpedl.com/trashcan-addon/) on MCPEDL<br><br>
