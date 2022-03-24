@@ -8,7 +8,6 @@ use broki\trashcanplus\command\TrashcanCommand;
 use broki\trashcanplus\entity\TrashcanEntity;
 use broki\trashcanplus\sound\RandomOrbSound;
 use brokiem\updatechecker\Promise;
-use brokiem\updatechecker\Status;
 use brokiem\updatechecker\UpdateChecker;
 use muqsit\invmenu\InvMenu;
 use muqsit\invmenu\InvMenuHandler;
@@ -49,6 +48,8 @@ class Trashcan extends PluginBase {
         37, 38, 39, 40, 41, 42, 43
     ];
 
+    private array $cachedUpdate;
+
     protected function onEnable(): void {
         self::setInstance($this);
 
@@ -68,15 +69,8 @@ class Trashcan extends PluginBase {
         $this->getScheduler()->scheduleRepeatingTask(new ClosureTask(function(): void {
             UpdateChecker::checkUpdate($this->getDescription()->getName(), $promise = new Promise());
 
-            $promise->catch(function($error) {
-                switch ($error) {
-                    case Status::CONNECTION_FAILED:
-                        $this->getLogger()->error("Update checker error: Connection timeout");
-                        break;
-                    case Status::NO_UPDATES_FOUND:
-                        $this->getLogger()->debug("This plugin is on latest version");
-                        break;
-                }
+            $promise->then(function($data) {
+                $this->cachedUpdate = [$data["version"], $data["last_state_change_date"], $data["html_url"]];
             });
         }), 864000); // 12 hours
     }
@@ -187,5 +181,9 @@ class Trashcan extends PluginBase {
 
     public function getInventoryBorderSlots(): array {
         return $this->inventoryBorderSlots;
+    }
+
+    public function getCachedUpdate(): array {
+        return $this->cachedUpdate;
     }
 }

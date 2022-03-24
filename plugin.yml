@@ -15,3 +15,5 @@ permissions:
     default: op
   trashcanplus.reload:
     default: op
+  trashcanplus.notify:
+    default: op
