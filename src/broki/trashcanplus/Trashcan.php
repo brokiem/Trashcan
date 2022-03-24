@@ -48,7 +48,7 @@ class Trashcan extends PluginBase {
         37, 38, 39, 40, 41, 42, 43
     ];
 
-    private array $cachedUpdate;
+    private array $cachedUpdate = [];
 
     protected function onEnable(): void {
         self::setInstance($this);
