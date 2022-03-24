@@ -7,6 +7,9 @@ namespace broki\trashcanplus;
 use broki\trashcanplus\command\TrashcanCommand;
 use broki\trashcanplus\entity\TrashcanEntity;
 use broki\trashcanplus\sound\RandomOrbSound;
+use brokiem\updatechecker\Promise;
+use brokiem\updatechecker\Status;
+use brokiem\updatechecker\UpdateChecker;
 use muqsit\invmenu\InvMenu;
 use muqsit\invmenu\InvMenuHandler;
 use muqsit\invmenu\transaction\InvMenuTransaction;
@@ -24,6 +27,7 @@ use pocketmine\item\VanillaItems;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
+use pocketmine\scheduler\ClosureTask;
 use pocketmine\utils\SingletonTrait;
 use pocketmine\utils\TextFormat;
 use pocketmine\world\sound\BarrelCloseSound;
@@ -60,6 +64,21 @@ class Trashcan extends PluginBase {
         if (!InvMenuHandler::isRegistered()) {
             InvMenuHandler::register($this);
         }
+
+        $this->getScheduler()->scheduleRepeatingTask(new ClosureTask(function(): void {
+            UpdateChecker::checkUpdate($this->getDescription()->getName(), $promise = new Promise());
+
+            $promise->catch(function($error) {
+                switch ($error) {
+                    case Status::CONNECTION_FAILED:
+                        $this->getLogger()->error("Update checker error: Connection timeout");
+                        break;
+                    case Status::NO_UPDATES_FOUND:
+                        $this->getLogger()->debug("This plugin is on latest version");
+                        break;
+                }
+            });
+        }), 864000); // 12 hours
     }
 
     public function checkResources(): void {

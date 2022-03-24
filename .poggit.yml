@@ -10,4 +10,7 @@ projects:
       - src: muqsit/InvMenu/InvMenu
         version: ^4.3.8
         branch: "4.0"
+      - src: brokiem-pm-pl/UpdateChecker/UpdateChecker
+        version: ^1.0.0
+        branch: "pm4"
 ...
