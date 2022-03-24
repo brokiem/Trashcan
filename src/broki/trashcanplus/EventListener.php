@@ -20,7 +20,7 @@ class EventListener implements Listener {
             [$latestVersion, $updateDate, $updateUrl] = Trashcan::getInstance()->getCachedUpdate();
 
             if (Trashcan::getInstance()->getDescription()->getVersion() !== $latestVersion) {
-                $player->sendMessage(" \n§aTrashcanPlus §bv$latestVersion §ahas been released on §b$updateDate. §aDownload the new update at §b$updateUrl\n ");
+                $player->sendMessage(" \n§aTrashcanPlus §bv$latestVersion §ahas been released on §b" . date("j F Y", $updateDate) . ". §aDownload the new update at §b$updateUrl\n ");
             }
         }
     }
